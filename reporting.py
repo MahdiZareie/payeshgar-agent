@@ -1,9 +1,10 @@
 import time
 from queue import Queue
+from payeshgar_http_client.v1.client import PayeshgarServerHTTPClient
 
 
 class Reporter:
-    def __init__(self, queue: Queue, client):
+    def __init__(self, queue: Queue, client: PayeshgarServerHTTPClient):
         self.queue = queue
         self.client = client
 
