@@ -1,13 +1,14 @@
 import re
+import json
 from typing import List
 import iso3166
-from toml import TomlDecodeError
 
 from utils import validate_url
 
 
 class ValidationError(ValueError):
-    pass
+    def __init__(self, detail: dict):
+        self.detail = detail
 
 
 class ConfigFileError(IOError):
@@ -70,15 +71,14 @@ class AgentConfig:
 
     @staticmethod
     def from_file(file_path):
-        import toml
         try:
-            configs = toml.load(file_path)
+            configs = json.load(file_path)
             agent_configuration = AgentConfig(
                 agent_info=get_key_or_raise(configs, 'agent_info', 'agent_info', 'agent_info object is required'),
                 servers=get_key_or_raise(configs, 'base_url', 'servers.base_url', 'servers list is required'),
             )
             return agent_configuration
-        except TomlDecodeError:
+        except json.JSONDecodeError:
             raise ConfigFileError("the configuration file '{}' is not a valid toml file.".format(file_path))
         except Exception:
             raise ConfigFileError("Unable to read the configuration file '{}'".format(file_path))
