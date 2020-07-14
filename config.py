@@ -47,7 +47,7 @@ class Server:
         self.validate()
 
     def validate(self):
-        if validate_url(self.base_url):
+        if not validate_url(self.base_url):
             raise ValidationError({"server.base_url": "'{}' is not a valid url".format(self.base_url)})
         if not self.token:
             raise ValidationError({"server.token": "'{}' is not a valid token".format(self.token)})
