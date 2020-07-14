@@ -72,12 +72,15 @@ class AgentConfig:
     @staticmethod
     def from_file(file_path):
         try:
-            configs = json.load(file_path)
-            agent_configuration = AgentConfig(
-                agent_info=get_key_or_raise(configs, 'agent_info', 'agent_info', 'agent_info object is required'),
-                servers=get_key_or_raise(configs, 'base_url', 'servers.base_url', 'servers list is required'),
-            )
-            return agent_configuration
+            with open(file_path) as config_fp:
+                configs = json.load(config_fp)
+                agent_configuration = AgentConfig(
+                    agent_info=get_key_or_raise(configs, 'agent_info', 'agent_info', 'agent_info object is required'),
+                    servers=get_key_or_raise(configs, 'servers', 'servers', 'servers list is required'),
+                )
+                return agent_configuration
+        except ValidationError:
+            raise
         except json.JSONDecodeError:
             raise ConfigFileError("the configuration file '{}' is not a valid toml file.".format(file_path))
         except Exception:
