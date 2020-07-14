@@ -1,30 +1,20 @@
+"""
+This module contains the classes which describe the structure of configurations.
+These classes designed to validate input config values
+
+"""
 import re
-import json
 from typing import List
 import iso3166
 
-from utils import validate_url
+from exceptions import ValidationError
+from utils import validate_url, get_key_or_raise
 
 
-class ValidationError(ValueError):
-    def __init__(self, detail: dict):
-        self.detail = detail
-
-
-class ConfigFileError(IOError):
-    pass
-
-
-def get_key_or_raise(dictionary: dict, key: str, key_name=None, err_msg=None):
-    try:
-        return dictionary[key]
-    except KeyError:
-        key_name = key_name or key
-        err_msg = err_msg or "'{}' is required".format(key_name)
-        raise ValidationError({key_name: err_msg})
-
-
-class AgentInfo:
+class HostInfo:
+    """
+    This class represents Host information in the configuration
+    """
     def __init__(self, name: str, country: str):
         self.name = name
         self.country = country
@@ -33,13 +23,16 @@ class AgentInfo:
     def validate(self):
         name_pattern = '^[a-z0-9-]+$'
         if re.match(name_pattern, self.name) is None:
-            raise ValidationError({"agent_info.name": "name should match this pattern '{}'".format(name_pattern)})
+            raise ValidationError({"host_info.name": "name should match this pattern '{}'".format(name_pattern)})
         if iso3166.countries_by_alpha3.get(self.country) is None:
-            raise ValidationError({"agent_info.country": "country is not a valid iso3166-alpha-3 country code".format(
+            raise ValidationError({"host_info.country": "country is not a valid iso3166-alpha-3 country code".format(
                 name_pattern)})
 
 
 class Server:
+    """
+    This class represents a server object in the configurations
+    """
     def __init__(self, base_url: str, token: str, groups: List[str]):
         self.base_url = base_url
         self.token = token
@@ -54,34 +47,47 @@ class Server:
 
 
 class AgentConfig:
-    def __init__(self, agent_info: dict, servers: List[dict]):
-        self.agent_info = AgentInfo(
-            name=get_key_or_raise(agent_info, 'name', 'agent_info.name', 'Agent info object must have name'),
-            country=get_key_or_raise(agent_info, 'country', 'agent_info.country', 'Agent info object must have country')
+    """
+    This class represents complete configurations of the agent
+    """
+    def __init__(self, host_info: dict, servers: List[dict]):
+        host_name = get_key_or_raise(
+            host_info,
+            'name',
+            ValidationError({'host_info.name': 'Host info object must have name'})
+        )
+        host_country = get_key_or_raise(
+            host_info,
+            'country',
+            ValidationError({'host_info.country': 'Host info object must have country'})
+        )
+
+        self.host_info = HostInfo(
+            name=host_name,
+            country=host_country
         )
         self.servers = []
         for srv in servers:
-            self.servers.append(
-                Server(
-                    base_url=get_key_or_raise(srv, 'base_url', 'servers.base_url', 'All servers must have base_url'),
-                    token=get_key_or_raise(srv, 'token', 'servers.token', 'All servers must have token'),
-                    groups=get_key_or_raise(srv, 'groups', 'servers.groups', 'All servers must have groups'),
-                )
+            base_url = get_key_or_raise(
+                srv,
+                'base_url',
+                ValidationError({'servers.base_url': 'All servers must have base_url'})
+            )
+            token = get_key_or_raise(
+                srv,
+                'token',
+                ValidationError({'servers.token': 'All servers must have token'})
+            )
+            groups = get_key_or_raise(
+                srv,
+                'groups',
+                ValidationError({'servers.groups': 'All servers must have groups'})
             )
 
-    @staticmethod
-    def from_file(file_path):
-        try:
-            with open(file_path) as config_fp:
-                configs = json.load(config_fp)
-                agent_configuration = AgentConfig(
-                    agent_info=get_key_or_raise(configs, 'agent_info', 'agent_info', 'agent_info object is required'),
-                    servers=get_key_or_raise(configs, 'servers', 'servers', 'servers list is required'),
+            self.servers.append(
+                Server(
+                    base_url=base_url,
+                    token=token,
+                    groups=groups,
                 )
-                return agent_configuration
-        except ValidationError:
-            raise
-        except json.JSONDecodeError:
-            raise ConfigFileError("the configuration file '{}' is not a valid toml file.".format(file_path))
-        except Exception:
-            raise ConfigFileError("Unable to read the configuration file '{}'".format(file_path))
+            )
