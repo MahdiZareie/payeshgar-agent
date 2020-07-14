@@ -36,7 +36,7 @@ class PayeshgarServerHTTPClient:
             query_params['after'] = after
         if before:
             query_params['before'] = before
-        response = self.session.get(url, data=query_params, timeout=5)
+        response = self.session.get(url, params=query_params, timeout=5)
         if response.status_code == 200:
             return response.json()  # <-- FIXME
         raise Exception("SERVER ERROR: {}".format(response.content))
@@ -46,4 +46,12 @@ class PayeshgarServerHTTPClient:
         response = self.session.post(url, data=json.dumps(results), timeout=5)
         if response.status_code == 200:
             return
+        raise Exception("SERVER ERROR: {}".format(response.content))
+
+    def get_endpoints(self, groups: Optional[List[str]]):
+        url = self._make_url('monitoring/endpoints')
+        params = dict(groups=groups) if groups else {}
+        response = self.session.get(url, params=params)
+        if response.status_code == 200:
+            return response.json()  # <-- FIXME
         raise Exception("SERVER ERROR: {}".format(response.content))
