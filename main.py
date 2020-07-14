@@ -1,5 +1,7 @@
 import sys
 import time
+import traceback
+
 from config import AgentConfig, ValidationError
 from application import Application
 import os
@@ -13,11 +15,12 @@ def get_config() -> AgentConfig:
             exit(1)
         return AgentConfig.from_file(config_file)
     except ValidationError as err:
-        print("Config file content is not valid for because: {}".format(
-            "\n".join(["{}: {}".format(key, value) for key, value in err.detail.items()])
+        print("Config file content is not valid because:\n{}".format(
+            "\n".join(["   - {}: {}".format(key, value) for key, value in err.detail.items()])
         ))
     except Exception as exp:
         print(str(exp))
+        print(traceback.format_exc())
     exit(1)
 
 
@@ -28,6 +31,7 @@ def main():
         app = Application(agent_info=agent_config.agent_info, server_info=server)
         app.run()
         apps.append(app)
+    print("Agent started...")
     while True:
         try:
             time.sleep(1)
