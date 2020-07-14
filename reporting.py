@@ -1,12 +1,16 @@
-import time
 from queue import Queue
 from payeshgar_http_client.v1.client import PayeshgarServerHTTPClient
 
 
 class Reporter:
+    """
+    Each reporter object is a consumer, it reads a batch of inspections-results from a queue, and
+    send them to an API
+
+    """
     def __init__(self, queue: Queue, client: PayeshgarServerHTTPClient):
-        self.queue = queue
-        self.client = client
+        self.queue = queue  # <-- To read results from
+        self.client = client  # <-- To send results to
 
     def _get_next_batch(self):
         queue_size = self.queue.qsize()
