@@ -2,12 +2,15 @@ import time
 from queue import Queue
 from threading import Thread
 
+from config import AgentInfo, Server
 from inspection import Inspector
 from reporting import Reporter
 
 
 class Application:
-    def __init__(self):
+    def __init__(self, agent_info: AgentInfo, server_info: Server):
+        self.agent_info = agent_info
+        self.server = server_info
         self.queue = Queue()
         self.time_to_go = False
 
