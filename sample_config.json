@@ -1,0 +1,26 @@
+{
+  "agent_info": {
+    "name": "aws-agent",
+    "country": "USA"
+  },
+  "servers": [
+    {
+      "base_url": "http://localhost:8000",
+      "groups": [
+        "europe",
+        "germany",
+        "hetzner"
+      ],
+      "token": "abcdefg1234567890"
+    },
+    {
+      "base_url": "http://somewhere.far.far.away.com:8000/one-gateway/another-gateway/bingo",
+      "groups": [
+        "europe",
+        "germany",
+        "hetzner"
+      ],
+      "token": "abcdefg1234567890"
+    }
+  ]
+}
