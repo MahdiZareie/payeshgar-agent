@@ -4,8 +4,9 @@ from queue import Queue
 
 
 class Reporter:
-    def __init__(self, queue: Queue):
+    def __init__(self, queue: Queue, client):
         self.queue = queue
+        self.client = client
 
     def _get_next_batch(self):
         queue_size = self.queue.qsize()
