@@ -17,14 +17,16 @@ class Application:
     def _inspection(self):
         inspector = Inspector(self.queue)
         while not self.time_to_go:
-            time.sleep(1)
             inspector.run()
+            time.sleep(1)
+
 
     def _reporting(self):
         reporter = Reporter(self.queue)
         while not self.time_to_go:
-            time.sleep(1)
             reporter.run()
+            time.sleep(1)
+
 
     def run(self):
         inspection_thread = Thread(name="inspection", target=self._inspection)
