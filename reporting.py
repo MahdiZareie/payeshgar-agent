@@ -1,4 +1,3 @@
-import random
 import time
 from queue import Queue
 
@@ -18,9 +17,7 @@ class Reporter:
         return []
 
     def _submit_batch(self, batch):
-        time.sleep(1)
-        if random.randint(0, 2) % 2 == 0:
-            time.sleep(3)
+        self.client.submit_results(batch)
 
     def run(self):
         time.sleep(2)
