@@ -21,7 +21,7 @@ class Application:
         self.client.introduce_agent(dto)
 
     def _inspection(self):
-        inspector = Inspector(self.queue)
+        inspector = Inspector(self.queue, self.client, self.server.groups)
         while not self.time_to_go:
             inspector.run()
             time.sleep(1)
