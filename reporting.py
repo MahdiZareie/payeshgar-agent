@@ -21,7 +21,6 @@ class Reporter:
         self.client.submit_results(batch)
 
     def run(self):
-        time.sleep(2)
         next_batch = self._get_next_batch()
         if next_batch:
             self._submit_batch(next_batch)
