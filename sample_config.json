@@ -16,9 +16,9 @@
     {
       "base_url": "http://somewhere.far.far.away.com:8000/one-gateway/another-gateway/bingo",
       "groups": [
-        "europe",
-        "germany",
-        "hetzner"
+        "asia",
+        "japan",
+        "equinix"
       ],
       "token": "abcdefg1234567890"
     }
