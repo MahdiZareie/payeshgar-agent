@@ -9,7 +9,7 @@ class BaseInspector:
     this class is here to represents the interface of an inspector class
     """
 
-    def inspect(self, endpoint):
+    def inspect(self, endpoint: dict):
         raise NotImplementedError()
 
 
