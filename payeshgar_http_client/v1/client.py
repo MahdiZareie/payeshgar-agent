@@ -7,13 +7,28 @@ from payeshgar_http_client.v1 import models
 
 
 class PayeshgarServerHTTPClient:
-    def __init__(self, base_url: str, token: str):
+    def __init__(self, base_url: str, username: str, password: str):
         v1_prefix = "/api/v1/"
         self.base_url = base_url.strip("/") + v1_prefix
-        self.token = token
-        self.session = requests.session()
-        self.session.headers['X-AGENT-TOKEN'] = token
-        self.session.headers['content-type'] = "application/json"
+        self.username, self.password = username, password
+        self._token = None
+        self.session = self.initialize_session()
+
+    def initialize_session(self):
+        s = requests.session()
+        s.headers['content-type'] = "application/json"
+        s.headers['AUTHORIZATION'] = "Bearer {}".format(self._get_token())
+        return s
+
+    def _get_token(self):
+        response = requests.post(
+            url=self._make_url('security/tokens'),
+            json=dict(username=self.username, password=self.password)
+        )
+        data = response.json()
+        if response.status_code != 200:
+            raise Exception("API ERROR: {}".format(data))
+        return data['token']
 
     def _make_url(self, path):
         return self.base_url + path
