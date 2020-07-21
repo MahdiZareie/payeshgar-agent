@@ -33,17 +33,17 @@ class Server:
     """
     This class represents a server object in the configurations
     """
-    def __init__(self, base_url: str, token: str, groups: List[str]):
+    def __init__(self, base_url: str, credentials: dict, groups: List[str]):
         self.base_url = base_url
-        self.token = token
+        self.credentials = credentials
         self.groups = groups
         self.validate()
 
     def validate(self):
         if not validate_url(self.base_url):
             raise ValidationError({"server.base_url": "'{}' is not a valid url".format(self.base_url)})
-        if not self.token:
-            raise ValidationError({"server.token": "'{}' is not a valid token".format(self.token)})
+        if not self.credentials:
+            raise ValidationError({"server.credentials": "credentials is required"})
 
 
 class AgentConfig:
@@ -73,10 +73,10 @@ class AgentConfig:
                 'base_url',
                 ValidationError({'servers.base_url': 'All servers must have base_url'})
             )
-            token = get_key_or_raise(
+            credentials = get_key_or_raise(
                 srv,
-                'token',
-                ValidationError({'servers.token': 'All servers must have token'})
+                'credentials',
+                ValidationError({'servers.credentials': 'All servers must have credentials'})
             )
             groups = get_key_or_raise(
                 srv,
@@ -87,7 +87,7 @@ class AgentConfig:
             self.servers.append(
                 Server(
                     base_url=base_url,
-                    token=token,
+                    credentials=credentials,
                     groups=groups,
                 )
             )

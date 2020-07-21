@@ -11,16 +11,10 @@
         "germany",
         "hetzner"
       ],
-      "token": "abcdefg1234567890"
-    },
-    {
-      "base_url": "http://somewhere.far.far.away.com:8000/one-gateway/another-gateway/bingo",
-      "groups": [
-        "asia",
-        "japan",
-        "equinix"
-      ],
-      "token": "abcdefg1234567890"
+      "credentials": {
+        "username": "apollo",
+        "password": "1"
+      }
     }
   ]
 }
