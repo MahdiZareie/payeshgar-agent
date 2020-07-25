@@ -1,9 +1,7 @@
 from queue import Queue
 from typing import List
 
-from producer import Producer
-from consumer import Consumer
-from repository.repository_factory import RepositoryFactory
+
 
 
 class Agent:
@@ -12,9 +10,10 @@ class Agent:
     and reporting those status to a management server
 
     """
-    def __init__(self, groups: List[str], repository_factory: RepositoryFactory):
+
+    def __init__(self, groups: List[str], client):
         self.groups = groups
-        self.repository_factory = repository_factory
+        self.client = client
         self.queue = Queue()
         self.time_to_go = False
 
@@ -22,6 +21,8 @@ class Agent:
         """
         Spawn producer and consumer threads and return immediately
         """
+        from payeshgar_agent.producer import Producer
+        from payeshgar_agent.consumer import Consumer
         Producer(context=self).start_producing()
         Consumer(context=self).start_consuming()
 

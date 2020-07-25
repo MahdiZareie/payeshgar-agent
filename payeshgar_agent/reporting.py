@@ -1,5 +1,5 @@
 from queue import Queue
-from payeshgar_http_client.v1.client import PayeshgarServerHTTPClient
+from payeshgar_agent.payeshgar_http_client.v1.client import PayeshgarServerHTTPClient
 
 
 class Reporter:

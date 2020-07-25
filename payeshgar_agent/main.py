@@ -1,10 +1,9 @@
 import json
 import sys
 import time
-import traceback
-
-from initializer import AgentInitializer
 import os
+import traceback
+from payeshgar_agent.initializer import AgentInitializer
 
 
 def get_configurations():

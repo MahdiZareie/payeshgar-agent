@@ -7,14 +7,15 @@ import re
 from typing import List
 import iso3166
 
-from exceptions import ValidationError
-from utils import validate_url, get_key_or_raise
+from payeshgar_agent.exceptions import ValidationError
+from payeshgar_agent.utils import validate_url, get_key_or_raise
 
 
 class HostInfo:
     """
     This class represents Host information in the configuration
     """
+
     def __init__(self, name: str, country: str):
         self.name = name
         self.country = country
@@ -33,6 +34,7 @@ class Server:
     """
     This class represents a server object in the configurations
     """
+
     def __init__(self, base_url: str, credentials: dict, groups: List[str]):
         self.base_url = base_url
         self.credentials = credentials
@@ -50,7 +52,19 @@ class AgentConfig:
     """
     This class represents complete configurations of the agent
     """
-    def __init__(self, host_info: dict, servers: List[dict]):
+
+    def __init__(self, configurations):
+        host_info = get_key_or_raise(
+            configurations,
+            'host_info',
+            ValidationError({'host_info': 'host_info object is required'})
+        )
+        servers = get_key_or_raise(
+            configurations,
+            'servers',
+            ValidationError({'servers': 'servers list is required'})
+        )
+
         host_name = get_key_or_raise(
             host_info,
             'name',
