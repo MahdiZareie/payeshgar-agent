@@ -1,7 +1,8 @@
 from payeshgar_agent.agent import Agent
 from payeshgar_agent.config import Server, AgentConfig
-
+from payeshgar_agent.payeshgar_http_client.v1.auth import JWTAuthentication
 from payeshgar_agent.payeshgar_http_client.v1.client import PayeshgarServerHTTPClient
+from payeshgar_agent.payeshgar_http_client.v1.session import HttpSessionBuilder
 
 
 class AgentInitializer:
@@ -29,7 +30,11 @@ class AgentInitializer:
         )
 
     def _get_client(self, server: Server) -> PayeshgarServerHTTPClient:
-        return PayeshgarServerHTTPClient(base_url=server.base_url, credentials=server.credentials)
+        session = HttpSessionBuilder() \
+            .base_url(server.base_url) \
+            .authentication(JWTAuthentication(server.credentials)) \
+            .build()
+        return PayeshgarServerHTTPClient(session)
 
     def _introduce_agent(self, client, server):
         from payeshgar_agent.payeshgar_http_client.v1.models import AgentDTO

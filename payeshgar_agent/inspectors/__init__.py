@@ -19,5 +19,5 @@ def get_inspector(endpoint) -> BaseInspector:
     at the moment we only support HTTP endpoints, so this function always ignores the endpoint parameter and
     will returns a new HTTPInspector instance
     """
-    from inspectors.http import HTTPInspector
+    from payeshgar_agent.inspectors import HTTPInspector
     return HTTPInspector()
