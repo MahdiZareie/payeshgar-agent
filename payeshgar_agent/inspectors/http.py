@@ -1,8 +1,7 @@
-from collections import OrderedDict
-
-from inspectors import BaseInspector
 import requests
-from requests import exceptions, adapters
+from requests import exceptions
+
+from payeshgar_agent.inspectors import BaseInspector
 
 
 class HTTPInspector(BaseInspector):
