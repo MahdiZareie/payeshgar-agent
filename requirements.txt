@@ -1,1 +1,4 @@
 iso3166
+python-dateutil
+retrying
+requests
